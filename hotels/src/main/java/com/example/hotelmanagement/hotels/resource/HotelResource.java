@@ -21,8 +21,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import com.example.hotelmanagement.hotels.authentication.Secured;
 import com.example.hotelmanagement.hotels.model.Hotel;
 import com.example.hotelmanagement.hotels.service.HotelService;
+
 
 @Path("/hotels")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -89,6 +91,7 @@ public class HotelResource {
 	   	}
 	   	
 	   	@DELETE
+	   	@Secured
 	   	@Path("/{hotelId}")
 	   	public Response deleteHotel(@PathParam("hotelId") String id) {
 	   		hotelService.deleteHotel(id);	   

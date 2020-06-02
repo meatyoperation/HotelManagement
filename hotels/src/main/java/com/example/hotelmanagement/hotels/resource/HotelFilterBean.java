@@ -7,12 +7,20 @@ import javax.ws.rs.PathParam;
 
 public class HotelFilterBean {
 
-	private @HeaderParam("sessionId") String sessionId;
-	private @CookieParam("cookie") String cookievalue;
+	@HeaderParam("sessionId") 
+	private String sessionId;
 	
-	private @PathParam("countryId") String country;
-	private @MatrixParam("price") int price;
-	private @MatrixParam("ratings") int ratings;
+    @CookieParam("cookie") 
+    private String cookievalue;
+	
+	@PathParam("countryId") 
+	private String country;
+	
+	@MatrixParam("price")
+	private int price;
+	
+	@MatrixParam("ratings")
+	private int ratings;
 	
 	
 	public String getSessionId() {
