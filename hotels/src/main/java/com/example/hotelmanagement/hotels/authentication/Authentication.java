@@ -56,7 +56,7 @@ public class Authentication {
     private String issueToken(String username, String password) {
     	String hashValue = Hashing.murmur3_32().hashString(username, StandardCharsets.UTF_8).toString()
     			+ Hashing.murmur3_32().hashString(username+password, StandardCharsets.UTF_8).toString();
-    	usersToken.put(hashValue, new User(username,password));
+    	usersToken.put(hashValue, users.get(username));
     	return hashValue;
     }
 }

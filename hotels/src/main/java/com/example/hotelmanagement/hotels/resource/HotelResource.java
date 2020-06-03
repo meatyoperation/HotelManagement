@@ -3,6 +3,8 @@ package com.example.hotelmanagement.hotels.resource;
 import java.net.URI;
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,7 +27,7 @@ import com.example.hotelmanagement.hotels.authentication.Secured;
 import com.example.hotelmanagement.hotels.model.Hotel;
 import com.example.hotelmanagement.hotels.service.HotelService;
 
-
+@Secured
 @Path("/hotels")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +41,8 @@ public class HotelResource {
 //	    }
 		
 	   	@GET
+	   	
+	   	@PermitAll
 	    public Response getAll(@QueryParam("price") int price,@QueryParam("country") String country) {
 	   		GenericEntity<List<Hotel>> list;
 	   		if(price > 0 && country==null) {
@@ -70,11 +74,15 @@ public class HotelResource {
 	   	
 	   	@GET
 	   	@Path("/{hotelId}") 
+	   	
+	   	@RolesAllowed({"USER"})
 	   	public Response getHotel(@PathParam("hotelId") String id) {
 	   		return Response.ok(hotelService.getHotelById(id)).build();
 	   	}
 	   	
 	   	@POST
+	   	
+	   	@RolesAllowed({"ADMIN","USER"})
 	   	public Response add(Hotel hotel, @Context UriInfo uriInfo) {
 	   		Hotel hotelEntity = hotelService.addHotel(hotel);
 	   		URI uri = uriInfo.getAbsolutePathBuilder().path(hotelEntity.getId()).build();
@@ -91,7 +99,8 @@ public class HotelResource {
 	   	}
 	   	
 	   	@DELETE
-	   	@Secured
+	   	
+	   	@RolesAllowed({"ADMIN"})
 	   	@Path("/{hotelId}")
 	   	public Response deleteHotel(@PathParam("hotelId") String id) {
 	   		hotelService.deleteHotel(id);	   
