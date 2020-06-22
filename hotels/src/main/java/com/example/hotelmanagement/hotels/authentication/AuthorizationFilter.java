@@ -39,7 +39,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         // @RolesAllowed on the method takes precedence over @PermitAll
         RolesAllowed rolesAllowed = method.getAnnotation(RolesAllowed.class);
         if (rolesAllowed != null) {
-        	System.out.println(rolesAllowed.value());
             performAuthorization(rolesAllowed.value(), requestContext);
             return;
         }
@@ -56,7 +55,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         rolesAllowed = 
             resourceInfo.getResourceClass().getAnnotation(RolesAllowed.class);
         if (rolesAllowed != null) {
-        	System.out.println(rolesAllowed.value()); 
             performAuthorization(rolesAllowed.value(), requestContext);
         }
 

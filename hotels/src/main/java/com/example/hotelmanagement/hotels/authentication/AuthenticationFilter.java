@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Priority;
 import javax.ws.rs.ext.Provider;
 
+import com.example.hotelmanagement.hotels.authentication.service.AuthenticationTokenService;
 import com.example.hotelmanagement.hotels.model.User;
 import com.example.hotelmanagement.hotels.repository.TestDatabase;
 
@@ -21,7 +22,6 @@ import javax.ws.rs.core.SecurityContext;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 	
-	private Map<String, User> usersToken = TestDatabase.getUsersToken();
     private static final String REALM = "example";
     private static final String AUTHENTICATION_SCHEME = "Bearer";
 
@@ -45,10 +45,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         try {
 
             // Validate the token
-            validateToken(token);
             
             // Parse token for user related details
-            User userDetails = parseTokenForUser(token);
+        	AuthenticationTokenService authenticationTokenService = new AuthenticationTokenService();
+        	User userDetails = authenticationTokenService.parseToken(token);
             
             boolean isSecure = requestContext.getSecurityContext().isSecure();
             // Overriding security context for incoming request
@@ -59,10 +59,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             abortWithUnauthorized(requestContext);
         }
     }
-
-    private User parseTokenForUser(String token) {
-		return usersToken.get(token);
-	}
 
 	private boolean isTokenBasedAuthentication(String authorizationHeader) {
         return authorizationHeader != null && authorizationHeader.toLowerCase()
@@ -77,9 +73,4 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                         .build());
     }
 
-    private void validateToken(String token) throws Exception {
-        if(usersToken.get(token) == null) {
-        	throw new Exception();
-        }
-    }
 }

@@ -1,6 +1,5 @@
 package com.example.hotelmanagement.hotels.authentication;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -11,17 +10,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.example.hotelmanagement.hotels.authentication.service.AuthenticationTokenService;
 import com.example.hotelmanagement.hotels.model.User;
 import com.example.hotelmanagement.hotels.repository.TestDatabase;
 import com.example.hotelmanagement.hotels.service.UserService;
-import com.google.common.hash.Hashing;
-
 
 @Path("/authentication")
 public class Authentication {
 	
 	UserService userService = UserService.getUserService();
-	private Map<String, User> usersToken = TestDatabase.getUsersToken();
 	private Map<String, User> users = TestDatabase.getUsers();
 	
 	
@@ -48,15 +45,13 @@ public class Authentication {
     }
 
     private void authenticate(String username, String password) throws Exception {
-        if(users.get(username) == null || !(users.get(username).getPassword().equals(password))) {
+        if(users.get(username) == null && !(users.get(username).getPassword().equals(password))) {
         	throw new Exception();
         }
     }
 
     private String issueToken(String username, String password) {
-    	String hashValue = Hashing.murmur3_32().hashString(username, StandardCharsets.UTF_8).toString()
-    			+ Hashing.murmur3_32().hashString(username+password, StandardCharsets.UTF_8).toString();
-    	usersToken.put(hashValue, users.get(username));
-    	return hashValue;
+    	AuthenticationTokenService authenticationTokenService = new AuthenticationTokenService();
+    	return authenticationTokenService.issueToken(users.get(username));
     }
 }
